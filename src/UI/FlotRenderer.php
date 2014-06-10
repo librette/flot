@@ -57,7 +57,9 @@ class FlotRenderer extends Object implements IRenderer
 		$data = iterator_to_array($dataSeries->getData());
 		$options['data'] = array_map(function (Flot\DataValue $value) {
 			if ($value->key instanceof \DateTime) {
-				return [(int) $value->key->format('U') * 1000, (float) $value->value];
+				$timestamp = (int) $value->key->format('U') + timezone_offset_get($value->key->getTimezone(), $value->key);
+
+				return [$timestamp * 1000, (float) $value->value];
 			} else {
 				return [(int) $value->key, (float) $value->value];
 			}
